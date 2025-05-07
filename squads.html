@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPL Team Squads</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module">
+        import config from './config.js';
+        window.currentConfig = config;
+    </script>
     <style>
         :root {
             --primary: #4f5bff;
@@ -25,26 +29,26 @@
             --lsg-color: #A0E1FF;
             --gt-color: #1C1C1C;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        body { 
+
+        body {
             font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
         }
-        
-        .container { 
-            max-width: 1200px; 
+
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         header {
             text-align: center;
             margin-bottom: 30px;
@@ -53,8 +57,8 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        
-        h1 { 
+
+        h1 {
             font-size: 3rem;
             margin-bottom: 15px;
             background: linear-gradient(90deg, var(--accent), var(--primary));
@@ -63,16 +67,16 @@
             color: transparent;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
-        .squads-section { 
+
+        .squads-section {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 25px;
             justify-content: center;
             margin-top: 30px;
         }
-        
-        .squad-card { 
+
+        .squad-card {
             background: var(--card-bg);
             border-radius: 15px;
             overflow: hidden;
@@ -85,12 +89,12 @@
             flex-direction: column;
             border-bottom: 5px solid transparent;
         }
-        
+
         .squad-card:hover {
             transform: translateY(-15px) scale(1.02);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
-        
+
         .team-color-section {
             height: 200px;
             display: flex;
@@ -99,18 +103,18 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .team-logo {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
         }
-        
+
         .squad-card:hover .team-logo {
             transform: scale(1.1);
         }
-        
+
         .team-name-section {
             padding: 20px;
             text-align: center;
@@ -120,23 +124,23 @@
             justify-content: center;
             background: rgba(0, 0, 0, 0.2);
         }
-        
+
         .team-name {
             font-size: 1.4rem;
             font-weight: 700;
             color: var(--text-primary);
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-        
+
         /* Enhanced player list styling */
-        .player-list { 
+        .player-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 20px;
             justify-content: center;
             padding: 25px;
         }
-        
+
         .player-card {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
@@ -149,22 +153,22 @@
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .player-card:hover {
             transform: translateY(-8px) scale(1.05);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             z-index: 1;
         }
-        
+
         .player-card:hover .player-img {
             transform: scale(1.1);
             border-color: rgba(255, 255, 255, 0.5);
         }
-        
+
         .player-card:hover::before {
             opacity: 1;
         }
-        
+
         .player-card::before {
             content: '';
             position: absolute;
@@ -178,7 +182,7 @@
             pointer-events: none;
             z-index: -1;
         }
-        
+
         .player-credits {
             position: absolute;
             top: 10px;
@@ -195,8 +199,8 @@
             font-weight: 700;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-        
-        .player-img { 
+
+        .player-img {
             width: 90px;
             height: 90px;
             border-radius: 50%;
@@ -206,12 +210,12 @@
             border: 3px solid rgba(255, 255, 255, 0.2);
             transition: transform 0.3s ease;
         }
-        
+
         .player-card:hover .player-img {
             transform: scale(1.1);
         }
-        
-        .player-name { 
+
+        .player-name {
             font-size: 1rem;
             color: var(--text-primary);
             font-weight: 600;
@@ -223,14 +227,14 @@
             gap: 5px;
             min-height: 40px;
         }
-        
+
         .foreign-player-icon {
             font-size: 1rem;
             color: #FFD700;
             margin-left: 4px;
         }
-        
-        .player-role { 
+
+        .player-role {
             font-size: 0.85rem;
             padding: 5px 12px;
             border-radius: 20px;
@@ -238,12 +242,12 @@
             font-weight: 600;
             margin-top: 5px;
         }
-        
+
         .role-WK-Batter { background-color: #4CAF50; color: white; }
         .role-Batter { background-color: #2196F3; color: white; }
         .role-All-Rounder { background-color: #FFC107; color: #333; }
         .role-Bowler { background-color: #F44336; color: white; }
-        
+
         /* Enhanced squad header */
         .squad-header {
             margin-bottom: 30px;
@@ -255,7 +259,7 @@
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
-        
+
         .team-logo-header {
             width: 100px;
             height: 100px;
@@ -264,20 +268,20 @@
             border: 4px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        
+
         .team-logo-header img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         .team-name-header {
             font-size: 2.2rem;
             font-weight: 700;
             color: var(--text-primary);
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
-        
+
         #back-btn {
             margin: 30px auto;
             display: block;
@@ -292,13 +296,13 @@
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(79, 91, 255, 0.3);
         }
-        
+
         #back-btn:hover {
             background: var(--secondary);
             box-shadow: 0 8px 20px rgba(79, 91, 255, 0.4);
             transform: translateY(-3px);
         }
-        
+
         /* Team flag background for players section */
         .players-section {
             position: relative;
@@ -307,7 +311,7 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        
+
         .team-flag-background {
             position: absolute;
             top: 0;
@@ -322,12 +326,12 @@
             pointer-events: none;
             border-radius: 15px;
         }
-        
+
         .squad-header, .player-list {
             position: relative;
             z-index: 1;
         }
-        
+
         /* Role filter buttons - Make it more sticky and match colors */
         .role-filter {
             display: flex;
@@ -345,14 +349,14 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             width: 100%;
         }
-        
+
         /* Match button colors with player role colors */
         .role-btn.all { background-color: #9C27B0; color: white; }
         .role-btn.wk { background-color: #4CAF50; color: white; } /* Match WK-Batter */
         .role-btn.bat { background-color: #2196F3; color: white; } /* Match Batter */
         .role-btn.all-rounder { background-color: #FFC107; color: #333; } /* Match All-Rounder */
         .role-btn.bowl { background-color: #F44336; color: white; } /* Match Bowler */
-        
+
         .role-btn {
             padding: 10px 20px;
             border: none;
@@ -387,7 +391,7 @@
             transform: scale(1.1);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         }
-        
+
         /* Loading animation */
         .loading-container {
             text-align: center;
@@ -400,7 +404,7 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        
+
         .loading-spinner {
             display: inline-block;
             width: 60px;
@@ -412,49 +416,49 @@
             animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
             margin: 0 auto 20px auto;
         }
-        
+
         .loading-text {
             font-size: 1.2rem;
             color: var(--text-secondary);
             position: relative;
         }
-        
+
         .loading-text::after {
             content: '.';
             animation: dots 1.5s steps(5, end) infinite;
         }
-        
+
         @keyframes dots {
             0%, 20% { content: '.'; }
             40% { content: '..'; }
             60% { content: '...'; }
             80%, 100% { content: ''; }
         }
-        
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .squads-section {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
-            
+
             .player-list {
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             }
-            
+
             .squad-header {
                 flex-direction: column;
                 text-align: center;
                 padding: 15px;
             }
-            
+
             .team-name-header {
                 font-size: 1.8rem;
             }
-            
+
             h1 {
                 font-size: 2.2rem;
             }
@@ -505,14 +509,14 @@
                 </div>
             </div>
         </header>
-        
+
         <div id="loading" style="text-align: center; padding: 40px;">
             <div class="loading-spinner"></div>
             <p style="margin-top: 20px; color: var(--text-secondary); font-size: 1.2rem;">Loading team data...</p>
         </div>
-        
+
         <div class="squads-section" id="squads-section" style="display:none;"></div>
-        
+
         <div class="players-section" id="players-section" style="display:none;">
             <!-- Role filter buttons will be added here -->
             <div class="role-filter" id="role-filter">
@@ -523,10 +527,10 @@
                 <button class="role-btn bowl" data-role="Bowler">BOWLERS</button>
             </div>
         </div>
-        
+
         <button id="back-btn" style="display:none;">Back to Teams</button>
     </div>
-    
+
     <script>
         // Team color mapping
         const teamColors = {
@@ -557,7 +561,7 @@
             const playersSection = document.getElementById('players-section');
             const backBtn = document.getElementById('back-btn');
             const roleFilter = document.getElementById('role-filter');
-            
+
             // Load squad data
             // Update the fetch path to point to the Backend folder
             fetch('squads.json')
@@ -565,22 +569,22 @@
                 .then(data => {
                     const squadsArr = data.squads || [];
                     squadsSection.innerHTML = '';
-                    
+
                     if (!Array.isArray(squadsArr) || squadsArr.length === 0) {
                         squadsSection.innerHTML = '<div style="text-align:center;color:var(--text-secondary);font-size:1.2rem;padding:40px;">No squads data available.</div>';
                         loading.style.display = 'none';
                         squadsSection.style.display = 'block';
                         return;
                     }
-                    
+
                     // Show all teams as cards
                     // When creating team cards, update the flag path
                     squadsArr.forEach((teamObj) => {
                         const teamName = teamObj.team_name;
                         const teamShortName = getTeamShortName(teamName);
                         const flagFileName = teamName.replace(/ /g, '_') + '.png';
-                        const flagPath = `../Backend/flags/${flagFileName}`;
-                        
+                        const flagPath = `${currentConfig.staticBaseUrl}/flags/${flagFileName}`;
+
                         const card = document.createElement('div');
                         card.className = `squad-card ${teamShortName}`;
                         card.innerHTML = `
@@ -595,15 +599,15 @@
                                 <div class="team-name">${teamName}</div>
                             </div>
                         `;
-                        
+
                         card.addEventListener('click', function() {
                             // Show players for this team
                             showTeamPlayers(teamObj, flagPath);
                         });
-                        
+
                         squadsSection.appendChild(card);
                     });
-                    
+
                     // Helper function to get team short name
                     function getTeamShortName(teamName) {
                         const shortNames = {
@@ -620,18 +624,18 @@
                         };
                         return shortNames[teamName] || "";
                     }
-                    
+
                     // Hide loading, show squads
                     loading.style.display = 'none';
                     squadsSection.style.display = 'grid';
-                    
+
                     // Back button event listener
                     backBtn.addEventListener('click', function() {
                         squadsSection.style.display = 'grid';
                         playersSection.style.display = 'none';
                         backBtn.style.display = 'none';
                     });
-                    
+
                     // Role filter buttons event listeners
                     const roleButtons = document.querySelectorAll('.role-btn');
                     roleButtons.forEach(btn => {
@@ -639,7 +643,7 @@
                             // Update active state
                             roleButtons.forEach(b => b.classList.remove('active'));
                             this.classList.add('active');
-                            
+
                             // Filter players
                             const selectedRole = this.getAttribute('data-role');
                             filterPlayersByRole(selectedRole);
@@ -652,24 +656,24 @@
                     squadsSection.innerHTML = '<div style="text-align:center;color:var(--text-secondary);font-size:1.2rem;padding:40px;">Error loading squad data. Please try again later.</div>';
                     squadsSection.style.display = 'block';
                 });
-                
+
             // Function to show team players
             function showTeamPlayers(teamObj, flagPath) {
                 squadsSection.style.display = 'none';
                 playersSection.style.display = 'block';
                 backBtn.style.display = 'block';
-                
+
                 // Clear previous content except role filter
                 const roleFilterElement = document.getElementById('role-filter');
                 playersSection.innerHTML = '';
                 playersSection.appendChild(roleFilterElement);
-                
+
                 // Add team flag as background
                 const backgroundDiv = document.createElement('div');
                 backgroundDiv.className = 'team-flag-background';
                 backgroundDiv.style.backgroundImage = `url('${flagPath}')`;
                 playersSection.appendChild(backgroundDiv);
-                
+
                 // Add squad header
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'squad-header';
@@ -680,47 +684,47 @@
                     <div class="team-name-header">${teamObj.team_name}</div>
                 `;
                 playersSection.appendChild(headerDiv);
-                
+
                 // Add player list
                 const playerList = document.createElement('div');
                 playerList.className = 'player-list';
                 playerList.id = 'player-list';
-                
+
                 // Store all players with data-role attribute for filtering
                 teamObj.players.forEach(player => {
                     const playerCard = document.createElement('div');
                     playerCard.className = 'player-card';
                     playerCard.setAttribute('data-role', player.role);
-                    
+
                     const roleClass = getRoleClass(player.role);
                     const isForeign = player.nationality === 'Foreign';
                     const foreignIcon = isForeign ? '<span class="foreign-player-icon">✈️</span>' : '';
-                    
+
                     playerCard.innerHTML = `
                         <div class='player-credits'>${player.credits}</div>
                         <img class='player-img' src='${player.image}' alt='${player.name}'>
                         <div class='player-name'>${player.name}${foreignIcon}</div>
                         <div class='player-role ${roleClass}'>${player.role}</div>
                     `;
-                    
+
                     playerList.appendChild(playerCard);
                 });
-                
+
                 playersSection.appendChild(playerList);
-                
+
                 // Reset role filter to 'ALL'
                 const roleButtons = document.querySelectorAll('.role-btn');
                 roleButtons.forEach(btn => btn.classList.remove('active'));
                 document.querySelector('.role-btn.all').classList.add('active');
             }
-            
+
             // Function to filter players by role
             function filterPlayersByRole(role) {
                 const playerCards = document.querySelectorAll('#player-list .player-card');
-                
+
                 playerCards.forEach(card => {
                     const playerRole = card.getAttribute('data-role');
-                    
+
                     if (role === 'all' || playerRole.includes(role)) {
                         card.style.display = 'block';
                     } else {

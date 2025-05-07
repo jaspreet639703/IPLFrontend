@@ -436,13 +436,13 @@
             function fetchAndDisplayData() {
                 // Fetch from local JSON file
                 // Update the fetch path to point to the Backend folder
-fetch(`${config.staticBaseUrl}/points_table.json`)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to load data: ' + response.status);
-        }
-        return response.json();
-    })
+                fetch(`${config.staticBaseUrl}/points_table.json`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to load data: ' + response.status);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         console.log("JSON data:", data);
 
@@ -495,7 +495,7 @@ fetch(`${config.staticBaseUrl}/points_table.json`)
                         <td class="rank-cell">${team.position || ''}</td>
                         <td>
                             <div class="team-cell">
-                                <img src="${config.staticBaseUrl}/flags/${team.team_name.replace(/ /g, '_')}.png" alt="${team.team_name}" class="team-logo" onerror="this.src=`${config.staticBaseUrl}/team_logos/default.png`">
+                                <img src="${config.staticBaseUrl}/flags/${team.team_name.replace(/ /g, '_')}.png" alt="${team.team_name}" class="team-logo" onerror="this.src='${config.staticBaseUrl}/team_logos/default.png'">
                                 <span class="team-name">${team.team_name || ''}</span>
                             </div>
                         </td>

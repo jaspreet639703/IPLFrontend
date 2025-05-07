@@ -551,9 +551,9 @@
                     const team1 = getTeamCode(teams[0]);
                     const team2 = getTeamCode(teams[1]);
 
-                    // Change these lines in the displayTeam function (around line 580)
-                    document.getElementById('team1-logo').src = `${config.staticBaseUrl}/team_logos/${team1}.png`;
-                    document.getElementById('team2-logo').src = `${config.staticBaseUrl}/team_logos/${team2}.png`;
+                    // Use the correct path for team logos
+                    document.getElementById('team1-logo').src = `${config.staticBaseUrl}/flags/${team1}.png`;
+                    document.getElementById('team2-logo').src = `${config.staticBaseUrl}/flags/${team2}.png`;
                 }
             }
 

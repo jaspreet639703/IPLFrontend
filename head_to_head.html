@@ -959,48 +959,88 @@
     'sunrisers-hyderabad': 'SRH'
   };
 
-  // Load team data from CSV files
+  // Load team data from squads.json instead of CSV files
   let loadedTeams = 0;
-  teams.forEach(team => {
-    fetch(`${config.staticBaseUrl}/Teams/${team}_squad.csv`)
-      .then(response => response.text())
-      .then(data => {
-        Papa.parse(data, {
-          header: true,
-          skipEmptyLines: true,
-          complete: function(results) {
-            // Process team data
-            results.data.forEach(player => {
-              if (player['Full Name']) {
-                // Use Full Name as key
-                const fullName = player['Full Name'].trim();
+
+  // Use the squads.json file which already has all team data
+  fetch(`${config.staticBaseUrl}/squads.json`)
+    .then(response => response.json())
+    .then(data => {
+      if (data && data.squads && Array.isArray(data.squads)) {
+        // Process all teams at once
+        data.squads.forEach(squad => {
+          const teamName = squad.team_name.toLowerCase().replace(/ /g, '-');
+          const teamCode = teamShortNames[teamName] || '';
+
+          // Process players in this team
+          if (squad.players && Array.isArray(squad.players)) {
+            squad.players.forEach(player => {
+              if (player.name) {
+                // Use player name as key
+                const fullName = player.name.trim();
                 if (!teamData[fullName]) {
                   teamData[fullName] = {
-                    name: player.Name,
-                    team: teamShortNames[team],
-                    role: player.Role,
-                    nationality: player.Foreign ? 'Foreign' : 'Indian'
+                    name: player.name,
+                    team: teamCode,
+                    role: player.role,
+                    nationality: player.nationality
                   };
                 }
               }
             });
-
-            loadedTeams++;
-            if (loadedTeams === teams.length) {
-              console.log("Team data loaded");
-              checkAllDataLoaded();
-            }
           }
         });
-      })
-      .catch(error => {
-        console.error(`Error loading ${team} data:`, error);
-        loadedTeams++;
-        if (loadedTeams === teams.length) {
-          checkAllDataLoaded();
-        }
+
+        console.log("Team data loaded from squads.json");
+        loadedTeams = teams.length; // Mark all teams as loaded
+        checkAllDataLoaded();
+      }
+    })
+    .catch(error => {
+      console.error("Error loading team data from squads.json:", error);
+
+      // Fallback to CSV files if squads.json fails
+      teams.forEach(team => {
+        fetch(`${config.staticBaseUrl}/Teams/${team}_squad.csv`)
+          .then(response => response.text())
+          .then(data => {
+            Papa.parse(data, {
+              header: true,
+              skipEmptyLines: true,
+              complete: function(results) {
+                // Process team data
+                results.data.forEach(player => {
+                  if (player['Full Name']) {
+                    // Use Full Name as key
+                    const fullName = player['Full Name'].trim();
+                    if (!teamData[fullName]) {
+                      teamData[fullName] = {
+                        name: player.Name,
+                        team: teamShortNames[team],
+                        role: player.Role,
+                        nationality: player.Foreign ? 'Foreign' : 'Indian'
+                      };
+                    }
+                  }
+                });
+
+                loadedTeams++;
+                if (loadedTeams === teams.length) {
+                  console.log("Team data loaded from CSV files");
+                  checkAllDataLoaded();
+                }
+              }
+            });
+          })
+          .catch(error => {
+            console.error(`Error loading ${team} data:`, error);
+            loadedTeams++;
+            if (loadedTeams === teams.length) {
+              checkAllDataLoaded();
+            }
+          });
       });
-  });
+    });
 
   // Load deliveries data
   fetch(`${config.staticBaseUrl}/deliveries.csv`)
@@ -1151,34 +1191,46 @@
       }
     }
 
-    // Find player image
-    for (const [name, url] of Object.entries(playerImages)) {
-      if (name.toLowerCase() === playerName.toLowerCase() ||
-          name.toLowerCase() === result.displayName.toLowerCase()) {
-        result.img = url;
-        break;
-      }
-    }
+    // This section is intentionally left empty as we already have the player image lookup logic above
 
-    // If no image found, try multiple paths to find player image
+    // If no image found from player_images.json, try to use the image from squads.json
     if (!result.img && result.team) {
-      const teamFolder = Object.keys(teamShortNames).find(key => teamShortNames[key] === result.team);
-      if (teamFolder) {
-        // Try formatted team folder path
-        const formattedTeam = teamFolder.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        result.img = `${config.staticBaseUrl}/Images/${formattedTeam}/${result.displayName}.png`;
+      // Try to find the player in squads.json
+      fetch(`${config.staticBaseUrl}/squads.json`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.squads && Array.isArray(data.squads)) {
+            // Find the team
+            const team = data.squads.find(squad =>
+              squad.team_name.toLowerCase().replace(/ /g, '-') ===
+              Object.keys(teamShortNames).find(key => teamShortNames[key] === result.team)
+            );
 
-        // Try alternative paths if needed
-        const playerNameNoSpaces = result.displayName.replace(/ /g, '_');
-        const altPaths = [
-          `${config.staticBaseUrl}/player_images/${playerNameNoSpaces}.png`,
-          `${config.staticBaseUrl}/player_images/${result.displayName}.png`,
-          `${config.staticBaseUrl}/Images/Players/${result.displayName}.png`,
-          `${config.staticBaseUrl}/Images/Players/${playerNameNoSpaces}.png`
-        ];
+            if (team && team.players) {
+              // Find the player
+              const player = team.players.find(p =>
+                p.name.toLowerCase() === result.displayName.toLowerCase() ||
+                p.name.toLowerCase() === playerName.toLowerCase()
+              );
 
-        // We can't check if files exist on client side directly,
-        // but we'll provide these paths as fallback options
+              if (player && player.image) {
+                result.img = player.image;
+                // Update the image element
+                const imgElement = document.getElementById(result.team === batterData.team ? 'left-flag' : 'right-flag');
+                if (imgElement) {
+                  imgElement.src = player.image;
+                }
+              }
+            }
+          }
+        })
+        .catch(error => {
+          console.error("Error loading player image from squads.json:", error);
+        });
+
+      // Set a default image path based on team
+      if (result.team) {
+        result.img = `${config.staticBaseUrl}/flags/${result.team}.png`;
       }
     }
 
